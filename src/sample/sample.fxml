@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+    <columnConstraints>
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+    </rowConstraints>
+    <children>
+        <BorderPane prefHeight="400.0" prefWidth="737.0">
+            <center>
+                <SplitPane dividerPositions="0.23945578231292516" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="371.0" prefWidth="238.0">
+                            <children>
+                                <Button fx:id="Detect_button" layoutX="30.0" layoutY="48.0" mnemonicParsing="false" onAction="#detect_date_click" text="Detect" />
+                                <Label fx:id="answer" layoutX="14.0" layoutY="159.0" prefHeight="25.0" prefWidth="125.0" text="Label" />
+                                <Button fx:id="Load_button" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#load_picture_click" prefHeight="20.0" prefWidth="82.0" text="Load Picture" />
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                    </items>
+                </SplitPane>
+            </center>
+            <top>
+                <MenuBar BorderPane.alignment="CENTER">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Close" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Delete" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="About" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </top>
+        </BorderPane>
+    </children>
+</GridPane>
