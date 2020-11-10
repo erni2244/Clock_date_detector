@@ -3,7 +3,6 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import java.io.File;
 
@@ -15,15 +14,16 @@ public class Controller {
     @FXML
     private Label answer;
 
-    @FXML
-    private AnchorPane anchorPane;
 
     public void detect_date_click(ActionEvent actionEvent) {
-        System.out.println("detect");
-        if(picture_transform.check_matrix()){
-            picture_transform.polar_transform();
-            System.out.println("transform");
+        if(picture_transform!=null) {
+            int[] a=picture_transform.read_date();
+            answer.setText("godzina "+a[0]+":"+a[1]);
         }
+        else
+            System.out.println("No fille loaded");
+
+        System.out.println("detect");
     }
 
 
@@ -46,8 +46,9 @@ public class Controller {
         String string=null;
         try {
             File file = fileChooser.showOpenDialog(null);
-            string=(String)file.getPath();
-        }catch (Exception e){}
+            string= file.getPath();
+            //string="C:/Users/lasek/Desktop/zegary/0003.png";
+        }catch (Exception ignored){}
         return string;
     }
 
