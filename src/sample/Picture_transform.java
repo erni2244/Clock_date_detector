@@ -1,16 +1,9 @@
 package sample;
 
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.WritableImage;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -25,7 +18,6 @@ public class Picture_transform {
     private Mat matrix;
     private Mat mat;
 
-    public WritableImage writableImage;
 
     public Picture_transform(String file_patch) {
         this.file_patch=file_patch;
@@ -34,36 +26,16 @@ public class Picture_transform {
 
     }
 
-    private void ShowImage(Mat image)
-    {
 
-        MatOfByte matOfByte = new MatOfByte();
-        Imgcodecs.imencode(".jpg",  image, matOfByte);
-        //Storing the encoded Mat in a byte array
-        byte[] byteArray = matOfByte.toArray();
-        //Displaying the image
-        InputStream in = new ByteArrayInputStream(byteArray);
-        BufferedImage bufImage = null;
-        try {
-            bufImage = ImageIO.read(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        writableImage = SwingFXUtils.toFXImage(bufImage, null);
-    }
 
 
     private void load_file_to_matrix(){
         try{
-            matrix = new Picture_cut(imageCodecs.imread(file_patch)).matrix;
-            ShowImage(matrix);
-
-            System.out.println("New image width: "+matrix.cols()+" height: "+matrix.rows());
+            matrix = imageCodecs.imread(file_patch);
             mat = new Mat();//imageCodecs.imread(file_patch);
             System.out.println("Image Loaded");
         }catch (Exception e){
-            System.out.println("Error" + e.getMessage());
+            System.out.println("Error");
         }
     }
 
@@ -217,9 +189,7 @@ public class Picture_transform {
 
 
     private void save_image(){
-        String string = System.getProperty("user.home") + "\\Desktop\\zegary\\odp.jpg";
-        System.out.println(string);
-
+        String string ="C:/Users/lasek/Desktop/zegary/odp.jpg";
         try {
             imageCodecs.imwrite(string, mat);
         }catch (Exception e){
