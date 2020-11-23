@@ -3,7 +3,9 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+
 import java.io.File;
 
 
@@ -13,6 +15,9 @@ public class Controller {
 
     @FXML
     private Label answer;
+
+    @FXML
+    ImageView imageView;
 
 
     public void detect_date_click(ActionEvent actionEvent) {
@@ -30,10 +35,13 @@ public class Controller {
     public void load_picture_click(ActionEvent actionEvent) {
         System.out.println("load");
         String patch=select_file();
+
+
         if(patch==null){
             answer.setText("Nie wczytano pliku");
         }else {
             picture_transform=new Picture_transform(patch);
+            imageView.setImage(picture_transform.writableImage);
         }
 
     }
