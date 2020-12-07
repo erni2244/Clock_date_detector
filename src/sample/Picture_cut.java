@@ -22,7 +22,7 @@ public class Picture_cut {
             for (int j =0;j<imread.cols();j++)
             {
 
-                if(!IsBackground(imread.get(i,j), background))
+                if(!IsBackground(imread.get(j,i), background))
                         rows[i]++;
             }
             if(rows[i] > 0)
@@ -44,7 +44,8 @@ public class Picture_cut {
             if(cols[i] >= cols[centerX])
                 centerX = i;
         }
-        int margin = 5;
+        int margin = 10;
+
 
         int rowStart, rowEnd, colStart, colEnd;
         int movey =0 ;
@@ -52,26 +53,31 @@ public class Picture_cut {
         for(int i = 0; i<rows.length;i++)
             if(rows[i] == rows[centerY])
                 movey++;
-        centerY -= movey;
+
+        centerY -= movey/2;
+
         int movex =0 ;
         for(int i = 0; i<cols.length;i++)
             if(cols[i] == cols[centerX])
                 movex++;
-        centerX -= movex;
 
-        rowStart = centerY-height/2-margin;
+        centerX -= movex/2;
+
+        rowStart = centerY-width/2-margin;
         if(rowStart < 0)
             rowStart = 0;
-        rowEnd = centerY+height/2+margin;
+        rowEnd = centerY+width/2+margin;
         if(rowEnd > rows.length)
             rowEnd = rows.length;
-        colStart = centerX-width/2-margin;
+        colStart = centerX-height/2-margin;
         if(colStart < 0)
             colStart = 0;
-        colEnd = centerX+width/2+margin;
+        colEnd = centerX+height/2+margin;
         if(colEnd > cols.length)
             colEnd = cols.length;
-        matrix = imread.submat(rowStart, rowEnd, colStart, colEnd);
+        //matrix = imread.submat(rowStart, rowEnd, colStart, colEnd);
+        matrix = imread.submat(colStart, colEnd, rowStart, rowEnd);
+
     }
     Boolean IsBackground(double[] color, double[] background)
     {
