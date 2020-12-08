@@ -63,20 +63,20 @@ public class Picture_cut {
 
         centerX -= movex/2;
 
-        rowStart = centerY-width/2-margin;
+        rowStart = centerX-width/2-margin;
         if(rowStart < 0)
             rowStart = 0;
-        rowEnd = centerY+width/2+margin;
+        rowEnd = centerX+width/2+margin;
         if(rowEnd > rows.length)
             rowEnd = rows.length;
-        colStart = centerX-height/2-margin;
+        colStart = centerY-height/2-margin;
         if(colStart < 0)
             colStart = 0;
-        colEnd = centerX+height/2+margin;
+        colEnd = centerY+height/2+margin;
         if(colEnd > cols.length)
             colEnd = cols.length;
-        //matrix = imread.submat(rowStart, rowEnd, colStart, colEnd);
-        matrix = imread.submat(colStart, colEnd, rowStart, rowEnd);
+        matrix = imread.submat(rowStart, rowEnd, colStart, colEnd);
+       // matrix = imread.submat(colStart, colEnd, rowStart, rowEnd);
 
     }
     Boolean IsBackground(double[] color, double[] background)
