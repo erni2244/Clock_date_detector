@@ -3,6 +3,7 @@ package sample;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
 import org.opencv.core.*;
+import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -11,8 +12,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import static java.lang.Math.abs;
 import static java.lang.StrictMath.round;
@@ -24,6 +27,7 @@ public class Picture_transform {
     private Imgcodecs imageCodecs=new Imgcodecs();
     private Mat matrix;
     private Mat mat;
+    private int thresh=90;
 
     public WritableImage writableImage;
 
@@ -74,6 +78,7 @@ public class Picture_transform {
 
     public int[] read_date(){
         if(check_matrix()){
+            odwroc_tlo();
             polar_transform();
             dilate_transform();
             inverse_binary_threshold();
@@ -109,7 +114,7 @@ public class Picture_transform {
 
     private void inverse_binary_threshold(){
         try {
-            Imgproc.threshold(mat, mat, 90, 255, THRESH_BINARY_INV);
+            Imgproc.threshold(mat, mat, thresh, 255, THRESH_BINARY_INV);
             //Imgproc.adaptiveThreshold(mat,mat,255,ADAPTIVE_THRESH_GAUSSIAN_C,THRESH_BINARY_INV,3,3);
             save_image();
         }catch (Exception e){
@@ -213,7 +218,59 @@ public class Picture_transform {
 
     }
 
+    public void odwroc_tlo(){
+        int max=0;
+        int min =255;
+        Mat m=matrix.clone();
+        Imgproc.cvtColor(m,m, COLOR_RGB2GRAY);
+        int y_center=(int)(m.rows()/2);
+        int x_center=(int)(m.cols()/2);
+        double zakres = 0.1; //w procetach od sierodka odchylenie
+        double zakres_na_punkt_środpowy=0.5*zakres;
+        Point p1=new Point((int)(x_center*((0.5-zakres)/0.5)),(int)(y_center*((0.5-zakres)/0.5)));  //wierzcholki kwadratu do sprawdzania kolorów (lewy górny)
+        Point p2=new Point((int)(x_center*((0.5+zakres)/0.5)),(int)(y_center*((0.5+zakres)/0.5)));  //wierzcholki kwadratu do sprawdzania kolorów (prawy dolny)
 
+        Point kropka_p1=new Point((int)(x_center*((0.5-zakres_na_punkt_środpowy)/0.5)),(int)(y_center*((0.5-zakres_na_punkt_środpowy)/0.5)));  //wierzcholki kwadratu do sprawdzania kolorów (lewy górny)
+        Point kropka_p2=new Point((int)(x_center*((0.5+zakres_na_punkt_środpowy)/0.5)),(int)(y_center*((0.5+zakres_na_punkt_środpowy)/0.5)));  //wierzcholki kwadratu do sprawdzania kolorów (prawy dolny)
+
+        for(int i = (int) p1.x; i<(int) p2.x; i++){
+            if(i==(int)kropka_p1.x)
+                i=(int)kropka_p2.x;
+            for(int j = (int) p1.y; j<(int) p2.y; j++){
+                if(i==(int)kropka_p1.y)
+                    i=(int)kropka_p2.y;
+
+                if(max<(int)m.get(i,j)[0])
+                    max=(int)m.get(i,j)[0];
+                if(min>(int)m.get(i,j)[0])
+                    min=(int)m.get(i,j)[0];
+
+
+            }
+        }
+        // szuka wartości tła na histogramie
+        Mat bHist = new Mat();
+        List<Mat> a=new ArrayList<>();
+        float[] range = {0, 256}; //the upper boundary is exclusive
+        MatOfFloat histRange = new MatOfFloat(range);
+        Core.split(m, a);
+        Imgproc.calcHist(a,new MatOfInt(0), new Mat(), bHist, new MatOfInt(255), histRange, false);
+        int wartosc_tla=0;
+        for(int i=0, max_pikseli=0;i<bHist.rows();i++)
+            if(max_pikseli<(int)bHist.get(i,0)[0]){
+                max_pikseli=(int)bHist.get(i,0)[0];
+                wartosc_tla=i;
+            }
+
+            if(wartosc_tla>(max-min)){
+                Core.bitwise_not(matrix,matrix);
+            min=255-min;
+            max=255-max;
+            }
+
+            thresh=(int)(max-min);
+            System.out.println(""+thresh);
+    }
 
 
     private void save_image(){
