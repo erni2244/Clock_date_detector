@@ -24,7 +24,6 @@ import static org.opencv.imgproc.Imgproc.*;
 public class Picture_transform {
 
     private String file_patch;
-    private Imgcodecs imageCodecs=new Imgcodecs();
     private Mat matrix;
     private Mat mat;
     private int thresh=90;
@@ -60,7 +59,7 @@ public class Picture_transform {
 
     private void load_file_to_matrix(){
         try{
-            matrix = new Picture_cut(imageCodecs.imread(file_patch)).matrix;
+            matrix = new Picture_cut(Imgcodecs.imread(file_patch)).matrix;
             ShowImage(matrix);
 
             System.out.println("New image width: "+matrix.cols()+" height: "+matrix.rows());
@@ -71,18 +70,23 @@ public class Picture_transform {
         }
     }
 
+
     public boolean check_matrix(){
         return matrix!=null;
     }
 
-
     public int[] read_date(){
         if(check_matrix()){
-            odwroc_tlo();
+            //odwroc_tlo();
+            Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\zegary\\odp1.jpg", matrix);
             polar_transform();
+            Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\zegary\\odp2.jpg", mat);
             dilate_transform();
+            Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\zegary\\odp3.jpg", mat);
             inverse_binary_threshold();
+            Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\zegary\\odp4.jpg", mat);
             sobel_transform();
+            Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\zegary\\odp5.jpg", mat);
             System.out.println("transform done");
             return czytaj_godz();
         }
@@ -137,7 +141,7 @@ public class Picture_transform {
         int flaga=0;
         int[] wskazowki = new int[10];  //dla bezpieczenstwa jest wiecej bo powino byc 3
         int nr_wskazowki=0;
-        double poczatek_przeszukiwania =0.4;    //w procetach
+        double poczatek_przeszukiwania =0.35;    //w procetach
 
         //znajduje gdzie sa wskazowki
             for(int j=0;j<y_size;j++){
@@ -223,8 +227,8 @@ public class Picture_transform {
         int min =255;
         Mat m=matrix.clone();
         Imgproc.cvtColor(m,m, COLOR_RGB2GRAY);
-        int y_center=(int)(m.rows()/2);
-        int x_center=(int)(m.cols()/2);
+        int y_center= m.rows()/2;
+        int x_center= m.cols()/2;
         double zakres = 0.1; //w procetach od sierodka odchylenie
         double zakres_na_punkt_środpowy=0.5*zakres;
         Point p1=new Point((int)(x_center*((0.5-zakres)/0.5)),(int)(y_center*((0.5-zakres)/0.5)));  //wierzcholki kwadratu do sprawdzania kolorów (lewy górny)
@@ -248,6 +252,7 @@ public class Picture_transform {
 
             }
         }
+        Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\odp0.jpg", m);
         // szuka wartości tła na histogramie
         Mat bHist = new Mat();
         List<Mat> a=new ArrayList<>();
@@ -262,13 +267,16 @@ public class Picture_transform {
                 wartosc_tla=i;
             }
 
+        System.out.println("max="+max+" min="+min+" wartosc_tla="+wartosc_tla);
+
             if(wartosc_tla>(max-min)){
+
                 Core.bitwise_not(matrix,matrix);
-            min=255-min;
-            max=255-max;
+                min=255-min;
+                max=255-max;
             }
 
-            thresh=(int)(max-min);
+            thresh= Math.abs(max-min);
             System.out.println(""+thresh);
     }
 
@@ -278,7 +286,7 @@ public class Picture_transform {
         System.out.println(string);
 
         try {
-            imageCodecs.imwrite(string, mat);
+            Imgcodecs.imwrite(string, mat);
         }catch (Exception e){
             System.out.println("Error save image");
         }
