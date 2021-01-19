@@ -26,7 +26,7 @@ public class Picture_transform {
     private String file_patch;
     private Mat matrix;
     private Mat mat;
-    private int thresh=90;
+    private int thresh=100;
 
     public WritableImage writableImage;
 
@@ -77,7 +77,7 @@ public class Picture_transform {
 
     public int[] read_date(){
         if(check_matrix()){
-            //odwroc_tlo();
+            odwroc_tlo();
             Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\zegary\\odp1.jpg", matrix);
             polar_transform();
             Imgcodecs.imwrite(System.getProperty("user.home") + "\\Desktop\\zegary\\odp2.jpg", mat);
@@ -106,7 +106,7 @@ public class Picture_transform {
     }
 
     private void dilate_transform(){
-        Mat kernel=Imgproc.getStructuringElement(Imgproc.MORPH_DILATE, new Size(100, 1));
+        Mat kernel=Imgproc.getStructuringElement(Imgproc.MORPH_DILATE, new Size(50, 1));
         try {
             Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2GRAY);
             Imgproc.dilate(mat, mat, kernel);
@@ -229,7 +229,7 @@ public class Picture_transform {
         Imgproc.cvtColor(m,m, COLOR_RGB2GRAY);
         int y_center= m.rows()/2;
         int x_center= m.cols()/2;
-        double zakres = 0.1; //w procetach od sierodka odchylenie
+        double zakres = 0.2; //w procetach od sierodka odchylenie
         double zakres_na_punkt_środpowy=0.5*zakres;
         Point p1=new Point((int)(x_center*((0.5-zakres)/0.5)),(int)(y_center*((0.5-zakres)/0.5)));  //wierzcholki kwadratu do sprawdzania kolorów (lewy górny)
         Point p2=new Point((int)(x_center*((0.5+zakres)/0.5)),(int)(y_center*((0.5+zakres)/0.5)));  //wierzcholki kwadratu do sprawdzania kolorów (prawy dolny)
@@ -276,8 +276,8 @@ public class Picture_transform {
                 max=255-max;
             }
 
-            thresh= Math.abs(max-min);
-            System.out.println(""+thresh);
+            thresh= Math.abs(max+min)/2;
+            System.out.println("thresh="+thresh);
     }
 
 
